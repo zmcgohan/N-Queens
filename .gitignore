@@ -1,0 +1,6 @@
+# no need for compiled Python files
+*.pyc
+# my personal run file for easy testing
+run.sh
+# no VIM swap files
+*.swp
