@@ -40,33 +40,39 @@ class Placer(object):
 				return True
 		return False
 
-class GreedyIncrementalPlacer(Placer):
+class IncrementalPlacer(Placer):
+	"""Parent abstract class to all incremental queen placer methods."""
+	def __init__(self, board, num_queens):
+		super(IncrementalPlacer, self).__init__(board, num_queens)
+		self.boards_tried = 1
+	def place_queens(self):
+		self.start_timer()
+		while self.board.queens_placed < self.num_queens:
+			if not self.place_next_queen():
+				self.boards_tried += 1
+				self.board.clear()
+				if self.boards_tried % 100 == 0:
+					print "Boards tried: {}; Time: {} seconds".format(self.boards_tried, time.clock() - self.start_time)
+		self.stop_timer()
+		print "Total boards created: {}".format(self.boards_tried)
+	def place_next_queen(self):
+		"""To be implemented by child classes. Returns True if a queen was able to be placed on current board. If False, queen was unable to be placed."""
+		pass
+
+class GreedyIncrementalPlacer(IncrementalPlacer):
 	"""Goes through ALL options of placing queens to find a correct solution."""
 	def __init__(self, board, num_queens):
 		"""Creates self with the chess board given."""
 		super(GreedyIncrementalPlacer, self).__init__(board, num_queens)
 		self.past_boards = []
-		self.cycles = 1
-	def place_queens(self):
-		queens_placed = 0
-		self.start_timer()
-		while queens_placed < self.num_queens:
-			queen_placed = False
-			for i in xrange(len(self.board.spots)):
-				for j in xrange(len(self.board.spots)):
-					if not self.would_create_past_board(i, j) and not self.spot_has_collision(i, j) and not queen_placed:
-						self.board.spots[i][j] = True
-						queen_placed = True
-						queens_placed += 1
-			if not queen_placed:
-				self.past_boards.append(copy.deepcopy(self.board))
-				self.board.clear()
-				queens_placed = 0
-				self.cycles += 1
-				if self.cycles % 100 == 0:
-					print "Cycles: {}; Time: {} seconds".format(self.cycles, time.clock() - self.start_time)
-		self.stop_timer()
-		print "Total boards created: {}".format(self.cycles)
+	def place_next_queen(self):
+		for i in xrange(len(self.board.spots)):
+			for j in xrange(len(self.board.spots)):
+				if not self.would_create_past_board(i, j) and not self.spot_has_collision(i, j):
+					self.board.place_queen(i, j)
+					return True
+		self.past_boards.append(copy.deepcopy(self.board))
+		return False
 	def would_create_past_board(self, row, col):
 		"""Checks if a queen placed at row, col would make a board already created."""
 		new_board = copy.deepcopy(self.board)
@@ -74,3 +80,16 @@ class GreedyIncrementalPlacer(Placer):
 		for board in self.past_boards:
 			if new_board == board: return True
 		return False
+
+class LeftmostIncrementalPlacer(Placer):
+	"""Places 1 queen in each column, starting with the leftmost column. It starts at the top of each column and goes down through all of the possible states."""
+	def __init__(self, board, num_queens):
+		super(LeftmostIncrementalPlacer, self).__init__(board, num_queens)
+		self.cycles = 1
+	def place_queens(self):
+		queens_placed = 0
+		self.start_timer()
+		while queens_placed < self.num_queens:
+			pass
+		self.stop_timer()
+		print "Total boards created: {}".format(self.cycles)
