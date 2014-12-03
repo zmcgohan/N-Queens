@@ -6,4 +6,4 @@ This implementation is made to exemplify different algorithms being used to solv
 
 Algorithms: 
 	GreedyIncrementalPlacer: Tries to place a new queen in a spot on the board every cycle to where the queen can't attack any others. If it doesn't succeed to place N queens in a cycle, it puts that board in a list of boards it's tried in the past. For each queen to-be-placed, the board that would be created is tested against this past list of boards. The queen is placed only if the new board wouldn't match any old ones.
-		Takes 1962 boards to reach solution. (Timewise, on my computer, between 6 and 6 1/2 minutes.)
+		Takes 1962 boards to reach solution. (Timewise, the first method used took about 6-6 1/2 minutes. The second method, 3-3 1/2. After hashing was used, 16-18 SECONDS!! Noice.)

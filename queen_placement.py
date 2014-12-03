@@ -71,14 +71,18 @@ class GreedyIncrementalPlacer(IncrementalPlacer):
 				if not self.would_create_past_board(i, j) and not self.spot_has_collision(i, j):
 					self.board.place_queen(i, j)
 					return True
-		self.past_boards.append(copy.deepcopy(self.board))
+		self.past_boards.append(self.board.hashcode())
 		return False
 	def would_create_past_board(self, row, col):
 		"""Checks if a queen placed at row, col would make a board already created."""
-		new_board = copy.deepcopy(self.board)
-		new_board.spots[row][col] = True
+		if not self.board.spots[row][col]:
+			self.board.spots[row][col] = True
+			new_board_hashcode = self.board.hashcode()
+			self.board.spots[row][col] = False
+		else:
+			new_board_hashcode = self.board.hashcode()
 		for board in self.past_boards:
-			if new_board == board: return True
+			if new_board_hashcode == board: return True
 		return False
 
 class LeftmostIncrementalPlacer(Placer):
