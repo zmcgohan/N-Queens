@@ -52,14 +52,14 @@ class GreedyIncrementalPlacer(IncrementalPlacer):
 	def __init__(self, board_size, num_queens):
 		"""Creates self with the chess board given."""
 		super(GreedyIncrementalPlacer, self).__init__(board_size, num_queens)
-		self.past_boards = []
+		self.past_boards = set()
 	def place_next_queen(self):
 		for i in xrange(len(self.board.spots)):
 			for j in xrange(len(self.board.spots)):
 				if not self.would_create_past_board(i, j) and self.board.spot_is_open(i, j):
 					self.board.place_queen(i, j)
 					return True
-		self.past_boards.append(self.board.hashcode())
+		self.past_boards.add(self.board.hashcode())
 		return False
 	def would_create_past_board(self, row, col):
 		"""Checks if a queen placed at row, col would make a board already created."""
@@ -70,8 +70,7 @@ class GreedyIncrementalPlacer(IncrementalPlacer):
 			self.board.spots[row][col] = old_val
 		else:
 			new_board_hashcode = self.board.hashcode()
-		for board in self.past_boards:
-			if new_board_hashcode == board: return True
+		if new_board_hashcode in self.past_boards: return True
 		return False
 
 class LeftmostIncrementalPlacer(IncrementalPlacer):
