@@ -2,6 +2,8 @@
 
 import time
 import copy
+import sys
+from math import ceil
 
 from board import Board
 
@@ -13,12 +15,10 @@ class Placer(object):
 		self.num_queens = num_queens
 	def start_timer(self):
 		"""Starts a timer to time execution of Placers."""
-		print "Placing {0} queens on a {1}x{1} board with {2}...".format(self.num_queens, len(self.board.spots), self.__class__.__name__)
 		self.start_time = time.clock()
 	def stop_timer(self):
 		"""Ends the timer and returns the elapsed time of execution."""
 		self.time_taken = time.clock() - self.start_time
-		print "{} took {} seconds.".format(self.__class__.__name__, self.time_taken)
 
 class IncrementalPlacer(Placer):
 	"""Parent abstract class to all incremental queen placer methods."""
@@ -26,14 +26,21 @@ class IncrementalPlacer(Placer):
 		super(IncrementalPlacer, self).__init__(board_size, num_queens)
 		self.boards_tried = 1
 	def place_queens(self):
+		next_print_update = 250
+		current_max_queens = 0
+		print "Placing {0} queens on a {1}x{1} board with {2}...".format(self.num_queens, len(self.board.spots), self.__class__.__name__)
 		self.start_timer()
 		while self.board.queens_placed < self.num_queens:
 			if not self.place_next_queen():
 				self.boards_tried += 1
+				current_max_queens = self.board.queens_placed if self.board.queens_placed > current_max_queens else current_max_queens
 				self.board.clear()
+				if next_print_update == self.boards_tried:
+					elapsed_time = time.clock() - self.start_time
+					next_print_update += int(ceil(self.boards_tried / elapsed_time))
+					print "Boards tried: {}; elapsed time: {}".format(self.boards_tried, elapsed_time)
 		self.stop_timer()
-		print "Total boards created: {}\n".format(self.boards_tried)
-		print "Final board:"
+		print "Solution found after {} seconds and {} boards:".format(self.time_taken, self.boards_tried)
 		print self.board
 		print
 	def place_next_queen(self):
