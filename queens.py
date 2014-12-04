@@ -18,6 +18,10 @@ if __name__ == '__main__':
 	except ValueError: 
 		print "queens.py must be ran with two arguments, the board width and number of queens.\n\nExample:\npython queens.py 5 2\n^ A 5x5 board would be tested for the positions of 2 queens which could not attack each other."
 		exit(1)
+	if board_size < 4 or num_queens > board_size:
+		print "The board size for n-queens must be >= 4 and the number of queens must be <= board_size."
+		exit(1)
+
 	greedy_placer = GreedyIncrementalPlacer(board_size, num_queens)
 	leftmost_placer = LeftmostIncrementalPlacer(board_size, num_queens)
 	greedy_placer.place_queens()

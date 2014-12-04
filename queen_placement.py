@@ -31,8 +31,6 @@ class IncrementalPlacer(Placer):
 			if not self.place_next_queen():
 				self.boards_tried += 1
 				self.board.clear()
-				if self.boards_tried % 500 == 0:
-					print "Boards tried: {}; Time: {} seconds".format(self.boards_tried, time.clock() - self.start_time)
 		self.stop_timer()
 		print "Total boards created: {}\n".format(self.boards_tried)
 		print "Final board:"
@@ -74,7 +72,16 @@ class LeftmostIncrementalPlacer(IncrementalPlacer):
 	def __init__(self, board_size, num_queens):
 		super(LeftmostIncrementalPlacer, self).__init__(board_size, num_queens)
 		self.cycles = 1
-		self.current_cols = [0 for x in xrange(self.num_queens)] # represents the current column for each row
+		self.current_rows = [0 for x in xrange(self.num_queens)] # represents the current row for each column
 	def place_next_queen(self):
-		self.board.queens_placed = self.num_queens
-		return True
+		on_col = self.board.queens_placed
+		while self.current_rows[on_col] < len(self.board.spots):
+			if self.board.spot_is_open(self.current_rows[on_col], on_col):
+				self.board.place_queen(self.current_rows[on_col], on_col)
+				return True
+			else:
+				self.current_rows[on_col] += 1
+		if self.current_rows[on_col] == len(self.board.spots):
+			self.current_rows[on_col-1] += 1
+			self.current_rows[on_col] = 0
+		return False
