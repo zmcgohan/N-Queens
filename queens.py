@@ -24,5 +24,5 @@ if __name__ == '__main__':
 
 	greedy_placer = GreedyIncrementalPlacer(board_size, num_queens)
 	leftmost_placer = LeftmostIncrementalPlacer(board_size, num_queens)
-	greedy_placer.place_queens()
+	#greedy_placer.place_queens()
 	leftmost_placer.place_queens()
