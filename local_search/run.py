@@ -20,6 +20,7 @@ if __name__ == '__main__':
 	# make sure all solvers passed in are real, if they are
 	solvers_to_use = []
 	if len(sys.argv) == 3:
+		# verify all solvers passed in are valid, and then add them to the solvers to use
 		lowercase_arg = sys.argv[2].lower()
 		for c in lowercase_arg:
 			if not c in SOLVER_KEYS:
@@ -27,11 +28,13 @@ if __name__ == '__main__':
 				sys.exit(1)
 			solvers_to_use.append(getattr(solvers, SOLVER_KEYS[c])(num_queens))
 	else:
+		# no solvers passed in, use all as default
 		for key in SOLVER_KEYS:
 			solvers_to_use.append(getattr(solvers, SOLVER_KEYS[key])(num_queens))
+	# use solvers to solve n_queens board
 	for solver in solvers_to_use:
 		print "Finding solution with {}...".format(solver.__class__.__name__)
 		start_time = clock()
 		solver.solve()
 		print "Solution found in {} seconds:".format(clock() - start_time)
-		solver.print_solution()
+		solver.print_board(solver.board)

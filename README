@@ -10,3 +10,7 @@ Algorithms:
 
 	LeftmostIncrementalPlacer: Places a queen in each column, starting from the leftmost and going to the rightmost. Does not place a queen in any spots that are already attacked. GREATLY decreases the possible states from GreedyIncrementalPlacer and GREATLY decreases the time to find a solution as well. 
 		Takes 106 boards to reach solution for 8 queen, 8x8 board. (Timewise, less than a hundredth of a second on first version versus ~2.8 seconds after multiple optimizations for GreedyIncrementalPlacer.)
+
+	(in local_search folder)
+	HillClimbingRandomRestartSolver: Modifies a single board until its heuristic function (the number of pairs of queens that can attack each other) returns 0. It modifies the board to one of the adjacent boards with the lowest heuristic function value. If there is no lower value, it side-steps into random other boards to try and find one. After so many side-steps it will create another board and try the same process.
+		100 boards solvable in a few minutes -- still pretty inefficient so that can be improved.
